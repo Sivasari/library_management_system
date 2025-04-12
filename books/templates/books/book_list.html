@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BOOKS IN LIBRARY</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to right, #fceabb, #f8b500);
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        form {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 250px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        button[type="submit"] {
+            padding: 10px 16px;
+            background-color: #f4a261;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .buttons {
+            margin-bottom: 20px;
+        }
+
+        .buttons a {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 16px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 0 10px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .buttons a:hover {
+            background-color: #388E3C;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 90%;
+            max-width: 1000px;
+            background-color: white;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4a261;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #fdf2e9;
+        }
+
+        tr:hover {
+            background-color: #fdebd0;
+        }
+
+        .action-links {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-links a {
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .action-links a.edit {
+            background-color: #2196F3;
+        }
+
+        .action-links a.delete {
+            background-color: #e74c3c;
+        }
+
+        .action-links a:hover {
+            opacity: 0.85;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>BOOKS IN LIBRARY</h2>
+
+    <!-- 🔍 Search Bar -->
+    <form method="get" action="">
+        <input type="text" name="q" placeholder="Search books by title..." value="{{ query|default:'' }}">
+        <button type="submit">Search</button>
+    </form>
+
+    <div class="buttons">
+        {% if request.user.is_staff %}
+            <a href="{% url 'book_add' %}">Add New Book</a>
+        {% endif %}
+        <a href="{% url 'dashboard' %}">Back to Dashboard</a>
+    </div>
+
+    <table>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Category</th>
+            <th>ISBN</th>
+            <th>Copies</th>
+            <th>Actions</th>
+        </tr>
+        {% for book in books %}
+        <tr>
+            <td>{{ book.title }}</td>
+            <td>{{ book.author }}</td>
+            <td>{{ book.category }}</td>
+            <td>{{ book.isbn }}</td>
+            <td>{{ book.copies_available }}</td>
+            <td class="action-links">
+                {% if request.user.is_staff %}
+                    <a href="{% url 'book_edit' book.pk %}" class="edit">Edit</a>
+                    <a href="{% url 'book_delete' book.pk %}" class="delete">Delete</a>
+                {% else %}
+                    <span style="color: gray;">N/A</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6" style="text-align:center;">No books found in the library.</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</body>
+</html>

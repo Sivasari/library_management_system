@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard | Library System</title>
+    <style>
+        body {
+            background: url("{% static 'accounts/library2.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .dashboard-container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0px 4px 20px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 600px;
+            width: 90%;
+        }
+
+        .dashboard-container h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .greeting {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            padding: 12px 20px;
+            background-color: #007BFF;
+            color: white;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            background-color: #0056b3;
+        }
+
+        .logout-btn {
+            background-color: #dc3545;
+        }
+
+        .logout-btn:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <h2>Welcome, {{ request.user.username }}!</h2>
+        <p class="greeting" id="greetingText">Good day!</p>
+
+        <div class="nav-links">
+            <a href="{% url 'book_list' %}">📖 View Books</a>
+            <a href="{% url 'profile' %}">👤 Profile</a>
+            <a href="{% url 'transactions_list' %}">💼 Transactions</a>
+            <a href="{% url 'logout' %}" class="logout-btn">🚪 Logout</a>
+        </div>
+    </div>
+
+    <script>
+        const hour = new Date().getHours();
+        let greet = "Hello";
+
+        if (hour < 12) {
+            greet = "Good Morning";
+        } else if (hour < 18) {
+            greet = "Good Afternoon";
+        } else {
+            greet = "Good Evening";
+        }
+
+        document.getElementById('greetingText').innerText = greet + ", {{ request.user.username }}!";
+    </script>
+</body>
+</html>

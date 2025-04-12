@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Transactions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #dbeafe, #f0f4ff);
+            margin: 0;
+            padding: 40px 20px;
+            color: #333;
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 32px;
+            color: #1e3a8a;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 16px 20px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #3b82f6;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+
+        tr:hover {
+            background-color: #e5f0ff;
+        }
+
+        .btn-return {
+            background-color: #10b981;
+            color: white;
+            padding: 8px 14px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .btn-return:hover {
+            background-color: #059669;
+        }
+
+        .btn-disabled {
+            display: inline-block;
+            padding: 8px 14px;
+            background-color: #e5e7eb;
+            color: #6b7280;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .status-not-returned {
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 10px 16px;
+            background-color: #6366f1;
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            box-shadow: 0 6px 12px rgba(99, 102, 241, 0.3);
+            transition: background-color 0.3s;
+        }
+
+        .back-link:hover {
+            background-color: #4f46e5;
+        }
+
+        p {
+            text-align: center;
+            font-size: 18px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>📘 My Transactions</h2>
+
+    {% if transactions %}
+    <table>
+        <tr>
+            <th>Book</th>
+            <th>Borrowed On</th>
+            <th>Returned On</th>
+            <th>Action</th>
+        </tr>
+        {% for tx in transactions %}
+        <tr>
+            <td>{{ tx.book.title }}</td>
+            <td>{{ tx.borrow_date|date:"M d, Y H:i" }}</td>
+            <td>
+                {% if tx.return_date %}
+                    {{ tx.return_date|date:"M d, Y H:i" }}
+                {% else %}
+                    <span class="status-not-returned">Not Returned</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if not tx.return_date %}
+                    {% if user.is_staff %}
+                        <a href="{% url 'return_book' tx.pk %}" class="btn-return">🔁 Return</a>
+                    {% else %}
+                        <span class="btn-disabled">⏳ Pending</span>
+                    {% endif %}
+                {% else %}
+                    <span class="btn-disabled">✅ Returned</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+        <p>🚫 You have no transactions yet.</p>
+    {% endif %}
+
+    <div style="text-align:center;">
+        <a href="{% url 'dashboard' %}" class="back-link">← Back to Dashboard</a>
+    </div>
+
+</body>
+</html>
